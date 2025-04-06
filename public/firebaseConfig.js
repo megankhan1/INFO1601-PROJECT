@@ -4,12 +4,13 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyBzXZD7ScTc9mC4Ug4NNibChlt3uc9Umpc",
+  authDomain: "medicalink-74f93.firebaseapp.com",
+  projectId: "medicalink-74f93",
+  storageBucket: "medicalink-74f93.firebasestorage.app",
+  messagingSenderId: "508036411554",
+  appId: "1:508036411554:web:67e34070c763c1813ce7fb",
+  measurementId: "G-VY49TE2E7K"
 };
 
 const app = initializeApp(firebaseConfig);
