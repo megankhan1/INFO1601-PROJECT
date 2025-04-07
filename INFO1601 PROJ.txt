@@ -1,0 +1,52 @@
+﻿Calendar app
+
+
+Scheduling appointments from the staff side
+
+
+* Authentication from staff
+* Commenting (to keep up with appointments)
+* Doctor tracker (to implement, for specific times and days)
+
+
+Authentication:
+(one for now)
+
+
+“Login” or “Create New User”
+
+
+UI design:
+* Rounded borders
+* Hover
+* Glassy look
+
+
+Login page:
+Username
+Password
+Login button
+Create new user button (leads to another page):
+        Username
+        Password
+        Another text bow
+        Create new user button
+
+
+
+
+
+
+Calendar API:
+
+
+https://fullcalendar.io/docs
+https://rapidapi.com/Morax/api/business-days-work-days-calculator/playground/apiendpoint_e72461a9-3060-4e21-b46c-ead3c920737f
+https://developers.google.com/calendar
+
+
+
+
+To read: 
+https://firebase.google.com/docs/auth
+https://firebase.google.com/docs/firestore
