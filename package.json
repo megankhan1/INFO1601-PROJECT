@@ -1,9 +1,5 @@
 {
   "dependencies": {
     "firebase": "^11.6.0"
-  },
-  "scripts": {
-    "start": "echo 'No server to start'",
-    "build": "echo 'Nothing to build'"
   }
 }
