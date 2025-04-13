@@ -1,44 +1,53 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
 import { 
   getAuth, 
-  signOut, 
-  signInAnonymously, 
-  setPersistence, 
-  browserLocalPersistence, 
-  onAuthStateChanged 
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  setPersistence,
+  browserLocalPersistence,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
 import firebaseConfig from "./firebaseConfig.js";
 
-
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-const auth = getAuth();
+const loginBtn = document.getElementById("loginBtn");
+const createBtn = document.getElementById("createBtn");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 
-function setAuthListeners(onLogin, onLogout){
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      onLogin();
-    } else {
-      onLogout();
-    }
-  });
-}
+loginBtn.addEventListener("click", async () => {
+  const email = emailInput.value;
+  const password = passwordInput.value;
 
-async function signIn(){
-  try{
-    await setPersistence(auth, browserLocalPersistence);
-    const user = await signInAnonymously(auth);
-  }catch(e){
-    console.error(e);
-  }
-}
-
-async function logout() {
   try {
-    await signOut(auth);
+    await setPersistence(auth, browserLocalPersistence);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log("Logged in as:", userCredential.user.email);
   } catch (error) {
-    console.error('Error signing out', error);
+    console.error("Login failed:", error.message);
   }
-}
+});
 
-export {auth, setAuthListeners, signIn, logout};
+createBtn.addEventListener("click", async () => {
+  const email = emailInput.value;
+  const password = passwordInput.value;
+
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    console.log("User created:", userCredential.user.email);
+  } catch (error) {
+    console.error("User creation failed:", error.message);
+  }
+});
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("User is logged in:", user.email || "(anonymous)");
+  } else {
+    console.log("User is logged out.");
+  }
+});
