@@ -3,11 +3,11 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyBzXZD7ScTc9mC4Ug4NNibChlt3uc9Umpc",
   authDomain: "medicalink-74f93.firebaseapp.com",
   projectId: "medicalink-74f93",
-  storageBucket: "medicalink-74f93.firebasestorage.app",
+  storageBucket: "medicalink-74f93.appspot.com",
   messagingSenderId: "508036411554",
   appId: "1:508036411554:web:67e34070c763c1813ce7fb",
   measurementId: "G-VY49TE2E7K"

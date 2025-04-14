@@ -2,14 +2,13 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/fireba
 import {
   getAuth,
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   signOut,
   setPersistence,
   browserLocalPersistence,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-import firebaseConfig from "./firebaseConfig.js";
+import { firebaseConfig } from "./firebaseConfig.js";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -21,37 +20,34 @@ const isHomePage = path.includes("index.html");
 onAuthStateChanged(auth, (user) => {
   if (!user && isHomePage) {
     window.location.href = "login.html";
-  }
-});
-
-onAuthStateChanged(auth, (user) => {
-  if (user && isLoginPage) {
+  } else if (user && isLoginPage) {
     window.location.href = "index.html";
   }
 });
 
 if (isLoginPage) {
   const loginBtn = document.getElementById("loginBtn");
-  const createBtn = document.getElementById("createBtn");
+  //const createBtn = document.getElementById("createBtn");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
 
   loginBtn.addEventListener("click", async () => {
     const email = emailInput.value;
     const password = passwordInput.value;
-
     try {
       await setPersistence(auth, browserLocalPersistence);
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log("Logged in as:", userCredential.user.email);
-      window.location.href = "index.html";
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 300);       
     } catch (error) {
       console.error("Login failed:", error.code, error.message);
       alert("Login failed: " + error.message);
     }
   });
 
-  createBtn.addEventListener("click", async () => {
+  /*createBtn.addEventListener("click", async () => {
     const email = emailInput.value;
     const password = passwordInput.value;
 
@@ -63,7 +59,7 @@ if (isLoginPage) {
       console.error("User creation failed:", error.message);
       alert("Error creating account: " + error.message);
     }
-  });
+  });*/
 }
 
 if (isHomePage) {
