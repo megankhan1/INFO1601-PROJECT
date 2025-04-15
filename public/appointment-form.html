@@ -160,7 +160,7 @@
         if (!clinic) return;
 
         // Simulate fetching from backend
-        const response = await fetch(/api/availability?clinic=${clinic});
+        const response = await fetch(`/api/availability?clinic=${clinic}`);
         const slots = await response.json();
 
         const events = slots.map(slot => ({

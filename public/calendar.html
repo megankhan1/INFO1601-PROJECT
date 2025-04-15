@@ -8,32 +8,54 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tooltip.js@1.3.3/dist/umd/tooltip.min.js"></script>
   <style>
-    /*body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    #calendar {
-      max-width: 900px;
-      margin: 0 auto;
-    }*/
+    body {
+      background: #f2f2f2;
+      margin: 0;
+      padding: 2rem;
+    }
+
+    .navbar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .navbar a {
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar a:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
-  <script type="module" src="auth.js"></script>
-  <p>You are logged in.</p>
+  <header>
+    <h2>MedicaLink</h2>
+    <nav class="navbar">
+      <a href="calendar.html">Home</a>
+      <a href="appointment-form.html">Schedule Appointment</a>
+      <button typr="submit">Logout</button>
+    </nav>
+  </header>
 
-  <button id="logoutBtn">Logout</button>
+  
 
-  <a href="login.html">Go to Login Page</a>
-
-
-  <h1>Calendar</h1>
   <div id="calendar"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.17/index.global.min.js'></script>
   <script src="calendar.js"></script>
-
+  <script type="module" src="auth.js"></script>
 </body>
 </html>
