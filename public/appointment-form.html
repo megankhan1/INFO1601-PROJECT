@@ -134,7 +134,7 @@
     <div id="calendar"></div>
 
     <!-- Submit -->
-    <button type="submit">Confirm Appointment</button>
+    <button type="button" onclick="submitAppointment()">Confirm Appointment</button>
   </div>
 
   <script>
@@ -147,10 +147,18 @@
     document.addEventListener('DOMContentLoaded', function () {
       const calendarEl = document.getElementById('calendar');
 
+      let selectedSlot = null;
+
       const calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'timeGridWeek',
         height: 600,
+        selectable: true,
         events: [],
+
+        eventClick: function (info) {
+          selectedSlot = info.event.start;
+          alert(`You selected: ${selectedSlot.toLocaleString()}`);
+        }
       });
 
       calendar.render();
@@ -173,6 +181,37 @@
         calendar.addEventSource(events);
       });
     });
+
+      function submitAppointment() {
+        const patientType = document.getElementById('patientType').value;
+        const clinic = document.getElementById('clinic').value;
+
+        let formData = {
+          patientType,
+          clinic,
+          appointmentTime: selectedSlot ? selectedSlot.toISOString() : null,
+        };
+
+        if (!selectedSlot) {
+          alert('Please select a time slot.');
+          return;
+        }
+
+        if (patientType === 'new') {
+          formData.fullName = document.querySelector('[name="fullName"]').value;
+          formData.dob = document.querySelector('[name="dob"]').value;
+          formData.address = document.querySelector('[name="address"]').value;
+          formData.contact = document.querySelector('[name="contact"]').value;
+          formData.emergencyContact = document.querySelector('[name="emergencyContact"]').value;
+          formData.medicalHistory = document.querySelector('[name="medicalHistory"]').value;
+        } else if (patientType === 'existing') {
+          formData.patientLookup = document.querySelector('[name="patientLookup"]').value;
+        }
+
+        console.log("Submitting Appointment:", formData);
+        
+        alert("Appointment submitted (check console)!");
+      }
   </script>
 </body>
 </html>
