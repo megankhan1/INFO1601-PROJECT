@@ -1,9 +1,9 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
-export const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyBzXZD7ScTc9mC4Ug4NNibChlt3uc9Umpc",
   authDomain: "medicalink-74f93.firebaseapp.com",
   projectId: "medicalink-74f93",

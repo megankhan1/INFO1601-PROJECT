@@ -76,12 +76,13 @@
 <body>
   <div class="form-container">
     <h2>Login</h2>
-    <form action="/login" method="POST">
+    <form id="login-form">
       <input type="text" name="username" placeholder="Username" required />
       <input type="password" name="password" placeholder="Password" required />
       <button type="submit">Login</button>
       <p>Don't have an account? <a href="create-user.html">Create New Account</a></p>
     </form>
   </div>
+  <script type="module" src="auth.js" defer></script>
 </body>
 </html>
