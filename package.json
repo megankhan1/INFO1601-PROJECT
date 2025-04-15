@@ -4,6 +4,26 @@
     "@fullcalendar/daygrid": "^6.1.17",
     "@fullcalendar/interaction": "^6.1.17",
     "@fullcalendar/timegrid": "^6.1.17",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "firebase": "^11.6.0"
-  }
+  },
+  "name": "info1601-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QueenMimi937/INFO1601-PROJECT.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/QueenMimi937/INFO1601-PROJECT/issues"
+  },
+  "homepage": "https://github.com/QueenMimi937/INFO1601-PROJECT#readme"
 }
