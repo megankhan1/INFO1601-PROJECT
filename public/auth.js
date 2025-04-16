@@ -2,7 +2,7 @@ import { auth } from "./firebaseConfig.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut, getAuth
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
 const signupForm = document.getElementById("signup-form");
@@ -51,21 +51,21 @@ if (loginForm) {
   });
 }
 
-const auth = getAuth();
 const logoutButton = document.getElementById("logout-button");
-// if (logoutButton) {
-//   logoutButton.addEventListener("click", () => {
-//     signOut(auth)
-//       .then(() => {
-//         console.log("User signed out.");
-//         window.location.href = "index.html";
-//       })
-//       .catch((error) => {
-//         alert(error.message);
-//         console.error("Logout Error:", error);
-//       });
-//   });
-// }
+
+ if (logoutButton) {
+   logoutButton.addEventListener("click", () => {
+     signOut(auth)
+       .then(() => {
+         console.log("User signed out.");
+        window.location.href = "index.html";
+       })
+       .catch((error) => {
+         alert(error.message);
+         console.error("Logout Error:", error);
+       });
+   });
+ }
 
 // filepath: c:\Users\User\OneDrive - The University of the West Indies, St. Augustine\Y1\S2\INFO1601\INFO1601-PROJECT\public\auth.js
 document.getElementById('logout-button').addEventListener('click', () => {
