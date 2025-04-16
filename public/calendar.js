@@ -20,7 +20,7 @@ app.get('/api/availability', (req, res) => {
 
   res.json(sampleSlots);
 });
-
+/*
 app.listen(PORT, () => {
   console.log(Server running at http://localhost:${PORT});
-});
+});*/
