@@ -6,6 +6,7 @@
   <title>Appointment Scheduling</title>
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -18,6 +19,31 @@
       padding: 2rem;
     }
 
+    header h2 {
+      margin-bottom: 0.5rem;
+    }
+
+    .navbar {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .navbar a, .navbar button {
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar a:hover, .navbar button:hover {
+      background-color: #0056b3;
+    }
+
     .container {
       max-width: 900px;
       margin: auto;
@@ -25,11 +51,6 @@
       padding: 2rem;
       border-radius: 10px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    h2 {
-      text-align: center;
-      color: #333;
     }
 
     .form-section {
@@ -50,17 +71,6 @@
       border-radius: 5px;
     }
 
-    button {
-      margin-top: 1.5rem;
-      padding: 0.8rem 1.5rem;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
     button:hover {
       background-color: #0056b3;
     }
@@ -72,12 +82,24 @@
     .hidden {
       display: none;
     }
+
+    h2{
+      text-align: center;
+    }
   </style>
 </head>
 <body>
+  <header>
+    <h2>MedicaLink</h2>
+    <nav class="navbar">
+      <a href="calendar.html">Home</a>
+      <a href="appointment-form.html">Schedule Appointment</a>
+      <button id="logout-button" type="submit">Logout</button>
+    </nav>
+  </header>
   <div class="container">
     <h2>Schedule Appointment</h2>
-
+    <form id="appointmentForm">
     <label>Is the patient new or existing?</label>
     <select id="patientType" onchange="togglePatientForm()">
       <option value="">-- Select --</option>
@@ -136,82 +158,10 @@
     <!-- Submit -->
     <button type="button" onclick="submitAppointment()">Confirm Appointment</button>
   </div>
+  </form>
+  </body>
 
-  <script>
-    function togglePatientForm() {
-      const type = document.getElementById('patientType').value;
-      document.getElementById('newPatientForm').classList.toggle('hidden', type !== 'new');
-      document.getElementById('existingPatientForm').classList.toggle('hidden', type !== 'existing');
-    }
+  <script type="module" src="calendar.js"></script>
 
-    document.addEventListener('DOMContentLoaded', function () {
-      const calendarEl = document.getElementById('calendar');
-
-      let selectedSlot = null;
-
-      const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'timeGridWeek',
-        height: 600,
-        selectable: true,
-        events: [],
-
-        eventClick: function (info) {
-          selectedSlot = info.event.start;
-          alert(`You selected: ${selectedSlot.toLocaleString()}`);
-        }
-      });
-
-      calendar.render();
-
-      document.getElementById('clinic').addEventListener('change', async function () {
-        const clinic = this.value;
-        if (!clinic) return;
-
-        // Simulate fetching from backend
-        const response = await fetch(`/api/availability?clinic=${clinic}`);
-        const slots = await response.json();
-
-        const events = slots.map(slot => ({
-          title: slot.time,
-          start: slot.date,
-          allDay: false
-        }));
-
-        calendar.removeAllEvents();
-        calendar.addEventSource(events);
-      });
-    });
-
-      function submitAppointment() {
-        const patientType = document.getElementById('patientType').value;
-        const clinic = document.getElementById('clinic').value;
-
-        let formData = {
-          patientType,
-          clinic,
-          appointmentTime: selectedSlot ? selectedSlot.toISOString() : null,
-        };
-
-        if (!selectedSlot) {
-          alert('Please select a time slot.');
-          return;
-        }
-
-        if (patientType === 'new') {
-          formData.fullName = document.querySelector('[name="fullName"]').value;
-          formData.dob = document.querySelector('[name="dob"]').value;
-          formData.address = document.querySelector('[name="address"]').value;
-          formData.contact = document.querySelector('[name="contact"]').value;
-          formData.emergencyContact = document.querySelector('[name="emergencyContact"]').value;
-          formData.medicalHistory = document.querySelector('[name="medicalHistory"]').value;
-        } else if (patientType === 'existing') {
-          formData.patientLookup = document.querySelector('[name="patientLookup"]').value;
-        }
-
-        console.log("Submitting Appointment:", formData);
-        
-        alert("Appointment submitted (check console)!");
-      }
-  </script>
 </body>
 </html>
