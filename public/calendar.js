@@ -38,23 +38,82 @@
       const availabilityRef = collection(db, 'availabilitySlots', clinicId, 'availability');
       const q = query(availabilityRef, where('isAvailable', '==', true));
       const snapshot = await getDocs(q);
+
+      const weeksToShow = 3;
   
       snapshot.forEach(doc => {
         const data = doc.data();
-        const timestamp = data.time;
-        const dateObj = timestamp.toDate();
-  
-        slots.push({
-          id: doc.id,
-          title: 'Available',
-          start: dateObj.toISOString(),
-          allDay: false
-        });
+        const dayOfWeek = data.dayOfWeek; 
+        const time = data.time;
+
+        const [hours, minutes] = time.split(":").map(Number);
+
+    for (let i = 0; i < weeksToShow; i++) {
+      const dateForThisWeek = getDateForDayOfWeek(dayOfWeek, i);
+      if (!dateForThisWeek) continue;
+
+      dateForThisWeek.setHours(hours, minutes, 0, 0);
+
+      slots.push({
+        id: doc.id + '_week' + i,
+        title: 'Available',
+        start: dateForThisWeek.toISOString(),
+        allDay: false
       });
+    }
+  });
   
       calendar.removeAllEvents();
       calendar.addEventSource(slots);
     }
+
+    async function loadAvailableSlots(clinicId) {
+      const slots = [];
+      const availabilityRef = collection(db, 'availabilitySlots', clinicId, 'availability');
+      const q = query(availabilityRef, where('isAvailable', '==', true));
+      const snapshot = await getDocs(q);
+    
+      const weeksToShow = 36;
+    
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const dayOfWeek = data.dayOfWeek; 
+        const time = data.time;
+    
+        const [hours, minutes] = time.split(":").map(Number);
+    
+        for (let i = 0; i < weeksToShow; i++) {
+          const dateForThisWeek = getDateForDayOfWeek(dayOfWeek, i);
+          if (!dateForThisWeek) continue;
+    
+          dateForThisWeek.setHours(hours, minutes, 0, 0);
+    
+          slots.push({
+            id: doc.id + '_week' + i,
+            title: 'Available',
+            start: dateForThisWeek.toISOString(),
+            allDay: false
+          });
+        }
+      });
+    
+      calendar.removeAllEvents();
+      calendar.addEventSource(slots);
+    }
+    
+    function getDateForDayOfWeek(dayName, weekOffset = 0) {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const targetIndex = days.indexOf(dayName);
+      if (targetIndex === -1) return null;
+    
+      const now = new Date();
+      const currentDay = now.getDay();
+      const diff = targetIndex - currentDay + (weekOffset * 7);
+      const targetDate = new Date(now);
+      targetDate.setDate(now.getDate() + diff);
+      targetDate.setHours(0, 0, 0, 0);
+      return targetDate;
+    }    
   
     document.getElementById('clinic').addEventListener('change', function () {
       const clinicId = this.value;
@@ -74,17 +133,20 @@
   
   window.submitAppointment = async function () {
     const patientType = document.getElementById('patientType').value;
-    const clinic = document.getElementById('clinic').value;
+    const clinicId = document.getElementById('clinic').value;
     const selectedSlot = window.getSelectedSlot();
   
     if (!selectedSlot) {
       alert('Please select a time slot.');
       return;
     }
+
+    const dayName = selectedSlot.toLocaleString('en-US', { weekday: 'long' });
+    const timeStr = selectedSlot.toTimeString().slice(0, 5);
   
     let formData = {
       patientType,
-      clinic,
+      clinic: clinicId,
       appointmentTime: selectedSlot.toISOString(),
     };
   
@@ -102,36 +164,27 @@
     try {
       await addDoc(collection(db, 'appointments'), formData);
   
-      const availabilityRef = collection(db, 'availabilitySlots', clinic, 'availability');
-      const q = query(availabilityRef, where('isAvailable', '==', true));
+      const availabilityRef = collection(db, 'availabilitySlots', clinicId, 'availability');
+      const q = query(availabilityRef, 
+        where('dayOfWeek', '==', dayName),
+        where('time', '==', timeStr),
+        where('isAvailable', '==', true)
+      );
+
       const snapshot = await getDocs(q);
   
-      const selectedTime = new Date(selectedSlot);
-      const selectedMinutes = selectedTime.getHours() * 60 + selectedTime.getMinutes();
-  
-      let matchFound = false;
-  
+      if (snapshot.empty) {
+      alert("Couldn't find the exact slot to mark as unavailable.");
+    } else {
       for (const docSnap of snapshot.docs) {
-        const data = docSnap.data();
-        const time = data.time.toDate();
-        const timeMinutes = time.getHours() * 60 + time.getMinutes();
-  
-        if (Math.abs(timeMinutes - selectedMinutes) < 1) {
-          const docRef = firestoreDoc(db, 'availabilitySlots', clinic, 'availability', docSnap.id);
-          await updateDoc(docRef, { isAvailable: false });
-          matchFound = true;
-          break;
-        }
+        const docRef = firestoreDoc(db, 'availabilitySlots', clinicId, 'availability', docSnap.id);
+        await updateDoc(docRef, { isAvailable: false });
       }
-  
-      if (!matchFound) {
-        alert("Couldn't find the exact slot to mark as unavailable.");
-      } else {
-        alert("Appointment booked successfully!");
-        window.location.reload();
-      }
-    } catch (err) {
-      console.error("Error submitting appointment:", err);
-      alert("There was an error submitting the appointment.");
+      alert("Appointment booked successfully!");
+      window.location.reload();
     }
-  };
+  } catch (err) {
+    console.error("Error submitting appointment:", err);
+    alert("There was an error submitting the appointment.");
+  }
+};
