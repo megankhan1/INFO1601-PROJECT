@@ -92,12 +92,63 @@
     }
 
     .extra-box {
-      height: 150px;
+      background-color: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: height 0.3s ease;
+      height: auto;
     }
+
 
     h2{
       text-align: center;
     }
+
+    .comment-input {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .comment-input input {
+      flex: 1;
+      padding: 0.4rem 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .comment-input button {
+      background-color: #007bff;
+      border: none;
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .comment-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .comment-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.3rem 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .delete-btn {
+      background: transparent;
+      border: none;
+      color: red;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
@@ -117,11 +168,9 @@
         <h3>Appointments</h3>
         <div class="section today">
           <h4>Today</h4>
-          <p>No appointments yet.</p>
         </div>
         <div class="section tomorrow">
           <h4>Tomorrow</h4>
-          <p>No appointments yet.</p>
         </div>
       </div>
     </div>
@@ -129,16 +178,23 @@
     
     <div class="right-panel">
       <div class="calendar-box" id="calendar"></div>
-      <div class="extra-box">
-        <h4>Notes / Reminders</h4>
-        <input type="text" placeholder="Add comment here...">
+        <div class="extra-box">
+          <h4>Notes</h4>
+          <div id="comment-list"></div>
+          <div>
+            <input type="text" id="comment-input" placeholder="Add comment..." class="form-control" />
+            <button id="submit-comment" class="btn btn-primary">Submit</button>
+          </div>
+        </div>      
+        <div class="comment-list" id="commentList"></div>
       </div>
     </div>
-  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.17/index.global.min.js'></script>
   <script src="calendar.js"></script>
   <script type="module" src="auth.js"></script>
+  <script type="module" src="homepage.js"></script>
+  <script type="module" src="comments.js"></script>
 </body>
 </html>
