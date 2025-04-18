@@ -41,7 +41,7 @@
   
       snapshot.forEach(doc => {
         const data = doc.data();
-        const timestamp = data.time; // Firestore Timestamp
+        const timestamp = data.time;
         const dateObj = timestamp.toDate();
   
         slots.push({
@@ -135,4 +135,3 @@
       alert("There was an error submitting the appointment.");
     }
   };
-  
