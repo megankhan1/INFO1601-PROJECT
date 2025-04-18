@@ -2,6 +2,7 @@
   import {
     collection,
     addDoc,
+    setDoc,
     getDocs,
     query,
     where,
@@ -25,8 +26,12 @@
       height: 600,
       selectable: true,
       events: [],
+      select: function (info) {
+        selectedSlot = new Date(info.start);
+        alert(`You selected: ${selectedSlot.toLocaleString()}`);
+      },
       eventClick: function (info) {
-        selectedSlot = info.event.start;
+        selectedSlot = new Date(info.event.start);
         alert(`You selected: ${selectedSlot.toLocaleString()}`);
       }
     });
@@ -100,6 +105,21 @@
       calendar.removeAllEvents();
       calendar.addEventSource(slots);
     }
+
+    async function loadExistingPatients() {
+      const snapshot = await getDocs(collection(db, 'patients'));
+      const datalist = document.getElementById('patientList');
+      datalist.innerHTML = ''; // Clear existing options
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const option = document.createElement('option');
+        option.value = data.patientId + ' ' + data['fullName'];
+        datalist.appendChild(option);
+      });
+    }
+
+    loadExistingPatients();
     
     function getDateForDayOfWeek(dayName, weekOffset = 0) {
       const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -157,8 +177,55 @@
       formData.contact = document.querySelector('[name="contact"]').value;
       formData.emergencyContact = document.querySelector('[name="emergencyContact"]').value;
       formData.medicalHistory = document.querySelector('[name="medicalHistory"]').value;
-    } else if (patientType === 'existing') {
-      formData.patientLookup = document.querySelector('[name="patientLookup"]').value;
+
+      function generatePatientId(fullName) {
+        const initials = fullName.split(' ').map(word => word[0].toUpperCase())
+          .join('').slice(0, 3);
+        const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+        const randomPart = Math.floor(1000 + Math.random() * 9000);
+
+        return `PT-${initials}-${datePart}-${randomPart}`;
+      }
+      
+      const fullName = formData.fullName;
+      const generatedId = generatePatientId(fullName);
+      const patientData = {
+        patientId: generatedId, fullName,
+        dob: formData.dob,
+        address: formData.address,
+        contact: formData.contact,
+        emergencyContact: formData.emergencyContact,
+        medicalHistory: formData.medicalHistory,
+        createdAt: new Date().toISOString()
+      };
+      const patientsRef = collection(db, 'patients');
+      const dupQuery = query(patientsRef, where('patientId', '==', generatedId));
+      const dupSnapshot = await getDocs(dupQuery);
+
+      if (!dupSnapshot.empty) {
+        alert("Patient ID already exists. Please try again.");
+        return;
+      }
+
+      const patientRef = firestoreDoc(db, 'patients', generatedId);
+      await setDoc(patientRef, patientData);
+      formData.patientId = generatedId;
+
+    }
+
+    if (patientType === 'existing') {
+      const patientName = document.querySelector('[name="patientLookup"]').value;
+      
+      const q = query(
+        collection(db, 'patients'),
+        where('Patient Name', '==', patientName)
+      );
+      
+      const match = await getDocs(q);
+      if(match.empty) {
+        alert("No existing patient found with that name. Please check the name or register as a new patient.");
+        return;
+      }
     }
   
     try {
