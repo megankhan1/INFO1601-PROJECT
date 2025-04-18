@@ -2,7 +2,7 @@ import { auth, db } from "./firebaseConfig.js";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
 import {
@@ -76,3 +76,14 @@ if (logoutButton) {
     }
   });
 }
+
+// Redirect to login page if the user is not authenticated
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    //console.warn("Unauthorized access attempt. Redirecting to login page.");
+    // Check if the current page is NOT the login page
+    if (!window.location.pathname.endsWith("index.html") && !window.location.pathname.endsWith("create-user.html")) {
+      window.location.href = "index.html";
+    }
+  }
+});
