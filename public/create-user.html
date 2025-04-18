@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
   <title>Create Account</title>
   <style>
     * {
@@ -11,7 +12,9 @@
     }
 
     body {
-      background: #f2f2f2;
+      /*background: #f2f2f2;*/
+      background: linear-gradient(to right, #8c52ff, #5ce1e6), url('./logo-bg.jpg');
+      background-blend-mode: overlay;
       margin: 0;
       display: flex;
       align-items: center;
@@ -77,11 +80,11 @@
   <div class="form-container">
     <h2>Create User</h2>
     <form id="signup-form">
-      <input type="text" name="username" placeholder="Username" required />
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="password" name="password" placeholder="Password" required />
-      <input type="password" name="confirm_password" placeholder="Confirm Password" required />
-      <button type="submit">Create User</button>
+      <input class="form-control" type="text" name="username" placeholder="Username" required />
+      <input class="form-control" type="email" name="email" placeholder="Email" required />
+      <input class="form-control" type="password" name="password" placeholder="Password" required />
+      <input class="form-control" type="password" name="confirm_password" placeholder="Confirm Password" required />
+      <button class="btn btn-primary" type="submit">Create User</button>
       <p><a href="index.html">Login as Existing User</a></p>
     </form>
   </div>
