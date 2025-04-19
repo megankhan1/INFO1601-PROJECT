@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   calendar.render();
 
-  async function loadAvailableSlots(clinicId) {
+  window.loadAvailableSlots = async function (clinicId) {
     const slots = [];
     const availabilityRef = collection(db, 'availabilitySlots', clinicId, 'availability');
     const q = query(availabilityRef); // Query all slots
@@ -191,22 +191,26 @@ window.submitAppointment = async function () {
     const patientRef = firestoreDoc(db, 'patients', generatedId);
     await setDoc(patientRef, patientData);
     formData.patientId = generatedId;
-
+    
   }
 
   if (patientType === 'existing') {
-    const patientName = document.querySelector('[name="patientLookup"]').value;
+    const patientId = document.querySelector('[name="patientLookup"]').value;
     
     const q = query(
       collection(db, 'patients'),
-      where('patientId', '==', patientName)
+      where('patientId', '==', patientId)
     );
     
     const match = await getDocs(q);
-    if(match.empty) {
+    if (match.empty) {
       alert("No existing patient found with that name. Please check the name or register as a new patient.");
       return;
     }
+
+    const patientData = match.docs[0].data(); // Get the first matching document
+    formData.patientId = patientId; // Add patientId to formData
+    formData.fullName = patientData.fullName; // Add the patient's name to formData
   }
 
   try {
@@ -222,17 +226,17 @@ window.submitAppointment = async function () {
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-    alert("Couldn't find the exact slot to mark as unavailable.");
-  } else {
-    for (const docSnap of snapshot.docs) {
-      const docRef = firestoreDoc(db, 'availabilitySlots', clinicId, 'availability', docSnap.id);
-      await updateDoc(docRef, { isAvailable: false });
+      alert("Couldn't find the exact slot to mark as unavailable.");
+    } else {
+      for (const docSnap of snapshot.docs) {
+        const docRef = firestoreDoc(db, 'availabilitySlots', clinicId, 'availability', docSnap.id);
+        await updateDoc(docRef, { isAvailable: false });
+      }
+      alert("Appointment booked successfully!");
+      loadAvailableSlots(clinicId); // Reload available slots to reflect the change
     }
-    alert("Appointment booked successfully!");
-    loadAvailableSlots(clinicId); // Reload available slots to reflect the change
+  } catch (err) {
+    console.error("Error submitting appointment:", err);
+    alert("There was an error submitting the appointment.");
   }
-} catch (err) {
-  console.error("Error submitting appointment:", err);
-  alert("There was an error submitting the appointment.");
-}
 };

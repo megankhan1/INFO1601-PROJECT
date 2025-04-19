@@ -198,6 +198,26 @@
       resize: none;
       word-break: break-word;
     }
+
+    /* Style for appointment items */
+    .appointment-item {
+      padding: 0.5rem;
+      border-radius: 5px;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .appointment-item:hover {
+      background-color: #f0f8ff; /* Light blue background on hover */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow on hover */
+      cursor: pointer;
+    }
+
+    /* Ensure headings and sections are not affected */
+    .section h4 {
+      margin-bottom: 1rem;
+      color: #333;
+      cursor: default; /* Prevent pointer cursor on headings */
+    }
     
   </style>
 </head>
@@ -232,18 +252,21 @@
 
     
     <div class="right-panel">
-      <div class="calendar-box" id="calendar"></div>
-        <div class="extra-box">
-          <h4>Notes</h4>
+      <!-- Patient Details -->
+      <div class="extra-box" id="patient-details-box">
+        <h4>Patient Details</h4>
+        <!-- <div class="loader" id="patient-details-loader"></div> Loader -->
+        <div id="patient-details">Select an appointment to view details</div>
+      </div>
+
+      <!-- Commonets Section -->
+      <div class="extra-box" id="comments-box">
+        <h4>Comments</h4>
           <div id="comment-list"></div>
-          <div>
-            <input type="text" id="comment-input" placeholder="Add note..." class="form-control" />
-            <button id="submit-comment" class="btn btn-primary">Submit</button>
-          </div>
-        </div>      
-        <div class="comment-list" id="commentList"></div>
+          <button id=""add-comment-btn class="btn btn-primary">Add Comment</button>
       </div>
     </div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.17/index.global.min.js'></script>
