@@ -20,12 +20,12 @@ async function loadPatientDetails(patientId) {
     if (docSnap.exists()) {
       const data = docSnap.data();
       detailsBox.innerHTML = `<h4>${data.fullName}</h4>
-        <p>Patient ID: ${patientId}</p>
-        <p>DOB: ${data.dob}</p>
-        <p>Address: ${data.address}</p>
-        <p>Contact: ${data.contact}</p>
-        <p>Emergency Contact: ${data.emergencyContact}</p>
-        <p>Medical History: ${data.medicalHistory}</p>`;
+        <p><strong>Patient ID:</strong> ${patientId}</p>
+        <p><strong>DOB:</strong> ${data.dob}</p>
+        <p><strong>Address:</strong> ${data.address}</p>
+        <p><strong>Contact:</strong> ${data.contact}</p>
+        <p><strong>Emergency Contact:</strong> ${data.emergencyContact}</p>
+        <p><strong>Medical History:</strong> ${data.medicalHistory}</p>`;
     } else {
       detailsBox.innerHTML = `<p>No details found for patient ID: ${patientId}</p>`;
     }
