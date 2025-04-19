@@ -1,5 +1,6 @@
 /* Top bar styling */
 .top-bar {
+  position: relative; /* Set the top-bar as the positioning context */
   background: linear-gradient(to right, #8c52ff, #5ce1e6); /* Same gradient as index.html */
   border-radius: 10px;
   color: white;
@@ -32,7 +33,9 @@
 }
 
 .navbar {
+  position: relative; /* Ensure the navbar is the positioning context */
   display: flex;
+  align-items: center;
   gap: 1rem;
 }
 
@@ -49,6 +52,16 @@
 
 .navbar a:hover, .navbar button:hover {
   background-color: rgba(255, 255, 255, 0.4);
+}
+
+#user-info {
+  position: absolute;
+  top: 100%; /* Position it below the heading */
+  left: 0; /* Align it to the left */
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-top: 0.5rem; /* Add spacing below the heading */
 }
 
 /* Loader styling */
