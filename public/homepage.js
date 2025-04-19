@@ -88,4 +88,13 @@ async function loadAppointments() {
   }
 }
 
+document.addEventListener("DOMContentLoaded", async () => {
+  const loader = document.getElementById("appointments-loader");
+  const todayAppointments = document.getElementById("today-appointments");
+  const tomorrowAppointments = document.getElementById("tomorrow-appointments");
+
+  // Show the loader
+  loader.style.display = "block";
+});
+
 loadAppointments();

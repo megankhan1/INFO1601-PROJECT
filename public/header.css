@@ -1,0 +1,82 @@
+/* Top bar styling */
+.top-bar {
+  background: linear-gradient(to right, #8c52ff, #5ce1e6); /* Same gradient as index.html */
+  border-radius: 10px;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%; /* Full width */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.top-bar img {
+  height: 130px;
+  margin-right: 1rem;
+}
+
+.top-bar a.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+}
+
+.top-bar h1 {
+  font-size: 1.5rem;
+  margin: 0;
+  text-align: left;
+  flex: 1; /* Push the heading to the left */
+}
+
+.navbar {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar a, .navbar button {
+  background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent buttons */
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.navbar a:hover, .navbar button:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Loader styling */
+.loader {
+  width: 40px;
+  height: 40px;
+  --c: no-repeat linear-gradient(#0d6efd 0 0);
+  background: var(--c), var(--c), var(--c), var(--c);
+  background-size: 21px 21px;
+  animation: l5 1.5s infinite cubic-bezier(0.3, 1, 0, 1);
+  margin: 1rem auto; /* Center the loader */
+}
+
+@keyframes l5 {
+  0% {
+    background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+  }
+  33% {
+    background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+    width: 60px;
+    height: 60px;
+  }
+  66% {
+    background-position: 100% 0, 100% 100%, 0 100%, 0 0;
+    width: 60px;
+    height: 60px;
+  }
+  100% {
+    background-position: 100% 0, 100% 100%, 0 100%, 0 0;
+  }
+}

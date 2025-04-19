@@ -5,6 +5,7 @@
   <title>MedicaLink</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="header.css">
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tooltip.js@1.3.3/dist/umd/tooltip.min.js"></script>
@@ -18,27 +19,6 @@
       background: #f2f2f2;
       margin: 0;
       padding: 1rem 2rem;
-    }
-
-    .navbar {
-      display: flex;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-
-    .navbar a, .navbar button {
-      background-color: #007bff;
-      color: white;
-      text-decoration: none;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .navbar a:hover, .navbar button:hover {
-      background-color: #0056b3;
     }
 
     header h2 {
@@ -226,25 +206,30 @@
 
   </style>
 </head>
-<body>
-  <header>
-    <h2>MedicaLink</h2>
-    <nav class="navbar">
-      <a href="calendar.html">Home</a>
-      <a href="appointment-form.html">Schedule Appointment</a>
-      <button id="logout-button" type="submit">Logout</button>
-    </nav>
-  </header>
 
+<header class="top-bar">
+  <a href="home.html" class="logo-link">
+    <img src="logo-bg.jpg" alt="MedicaLink Logo" />
+  </a>
+  <h1>MedicaLink</h1>
+  <nav class="navbar">
+    <a href="home.html">Home</a>
+    <a href="appointment-form.html">Schedule Appointment</a>
+    <button id="logout-button" type="submit">Logout</button>
+  </nav>
+</header>
+
+<body>
   <div class="main-container">
   
     <div class="left-panel">
       <div class="appointments">
         <h3>Appointments</h3>
-        <div class="section today">
+        <div class="loader" id="appointments-loader"></div> <!-- Loader -->
+        <div class="section today" id="today-appointments">
           <h4>Today</h4>
         </div>
-        <div class="section tomorrow">
+        <div class="section tomorrow" id="tomorrow-appointments">
           <h4>Tomorrow</h4>
         </div>
       </div>
