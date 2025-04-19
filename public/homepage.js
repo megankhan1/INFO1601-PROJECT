@@ -77,6 +77,12 @@ async function loadAppointments() {
           minute: "2-digit",
         });
 
+        const formattedDate = appt.dateObj.toLocaleDateString([], {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+
         const name = appt.patientLookup || appt.fullName || "Unnamed";
         const clinic = appt.clinic || "Unknown Clinic";
         const patientType = appt.patientType || "unspecified";
@@ -85,6 +91,7 @@ async function loadAppointments() {
           <div class="appointment-item" data-id="${appt.patientId}" style="margin-bottom: 0.5rem; cursor: pointer;">
             <strong>${name}</strong><br>
             Clinic: ${clinic}<br>
+            Date: ${formattedDate}<br>
             Time: ${formattedTime}
           </div>
         `;
