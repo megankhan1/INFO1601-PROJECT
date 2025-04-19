@@ -54,7 +54,7 @@ if (loginForm) {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log("Login success:", userCredential.user);
-      window.location.href = "calendar.html";
+      window.location.href = "home.html";
     } catch (error) {
       alert(error.message);
       console.error("Login Error:", error);
