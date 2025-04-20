@@ -141,6 +141,13 @@ document.addEventListener('DOMContentLoaded', async function () {
   };
 });
 
+function generateAppointmentId(clinicId, appointmentTime) {
+  const datePart = new Date(appointmentTime).toISOString().slice(0, 10).replace(/-/g, '');
+  const timePart = new Date(appointmentTime).toISOString().slice(11, 16).replace(':', '');
+  const randomPart = Math.floor(1000 + Math.random() * 9000); // Random 4-digit number
+  return `APPT-${clinicId}-${datePart}-${timePart}-${randomPart}`;
+}
+
 window.submitAppointment = async function () {
   const patientType = document.getElementById('patientType').value;
   const clinicId = document.getElementById('clinic').value;
@@ -151,7 +158,10 @@ window.submitAppointment = async function () {
     return;
   }
 
+  const appointmentId = generateAppointmentId(clinicId, selectedSlot);
+
   let formData = {
+    appointmentId, // Add the generated appointment ID
     patientType,
     clinic: clinicId,
     appointmentTime: selectedSlot.toISOString(),
@@ -215,7 +225,8 @@ window.submitAppointment = async function () {
   }
 
   try {
-    await addDoc(collection(db, 'appointments'), formData);
+    const appointmentRef = firestoreDoc(db, 'appointments', appointmentId); // Use the generated ID
+    await setDoc(appointmentRef, formData); // Save the appointment with the custom ID
     alert("Appointment booked successfully!");
     await loadAvailableSlots(clinicId); // Refresh available slots
   } catch (err) {
@@ -223,3 +234,7 @@ window.submitAppointment = async function () {
     alert("There was an error submitting the appointment.");
   }
 };
+
+window.cancelAppointment = function() {
+  window.location.href = "home.html"; // Redirect to the home page
+}

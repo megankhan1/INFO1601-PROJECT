@@ -1,4 +1,4 @@
-import { collection, getDocs, getDoc, query, orderBy, doc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import { collection, getDocs, getDoc, query, orderBy, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 import { db } from './firebaseConfig.js'; // Adjust path if necessary
 
 function isSameDate(date1, date2) {
@@ -12,7 +12,7 @@ function isSameDate(date1, date2) {
 async function loadPatientDetails(patientId) {
   console.log("Loading details for patient ID:", patientId); // Debugging log
 
-  const detailsBox = document.getElementById("patient-details-box");
+  const detailsBox = document.getElementById("patient-details");
   if (detailsBox) {
     const docRef = doc(db, "patients", patientId);
     const docSnap = await getDoc(docRef);
@@ -85,14 +85,21 @@ async function loadAppointments() {
 
         const name = appt.patientLookup || appt.fullName || "Unnamed";
         const clinic = appt.clinic || "Unknown Clinic";
-        const patientType = appt.patientType || "unspecified";
 
         html += `
-          <div class="appointment-item" data-id="${appt.patientId}" style="margin-bottom: 0.5rem; cursor: pointer;">
+          <div class="appointment-item" data-id="${appt.patientId}" data-appointment-id="${appt.id}" style="margin-bottom: 0.5rem; cursor: pointer;">
             <strong>${name}</strong><br>
             Clinic: ${clinic}<br>
             Date: ${formattedDate}<br>
             Time: ${formattedTime}
+            <div class="appointment-actions">
+              <button class="edit-btn" data-id="${appt.appointmentId}" title="Edit Appointment">
+                ✏️
+              </button>
+              <button class="cancel-btn" data-id="${appt.appointmentId}" title="Cancel Appointment">
+                ❌
+              </button>
+            </div>
           </div>
         `;
       });
@@ -113,10 +120,91 @@ async function loadAppointments() {
       await loadPatientDetails(patientId);
       await loadPatientComments(patientId); // Ensure this function exists
     });
+
+    // Add click event listener for edit and cancel buttons
+    document.querySelector(".appointments").addEventListener("click", async (e) => {
+      const editButton = e.target.closest(".edit-btn");
+      const cancelButton = e.target.closest(".cancel-btn");
+
+      if (editButton) {
+        const appointmentId = editButton.getAttribute("data-id");
+        await editAppointment(appointmentId);
+      }
+
+      if (cancelButton) {
+        const appointmentId = cancelButton.getAttribute("data-id");
+        await deleteAppointment(appointmentId);
+      }
+    });
   } catch (error) {
     console.error("Error loading appointments:", error);
     appointmentsDiv.innerHTML += `<p style="color:red;">Failed to load appointments.</p>`;
   }
+}
+
+async function editAppointment(appointmentId) {
+  const appointmentRef = doc(db, "appointments", appointmentId);
+  const appointmentSnap = await getDoc(appointmentRef);
+
+  if (!appointmentSnap.exists()) {
+    alert("Appointment not found.");
+    return;
+  }
+
+  const appointmentData = appointmentSnap.data();
+
+  // Prompt the user to edit the details (you can replace this with a modal or form)
+  const newDate = prompt("Enter new date (YYYY-MM-DD):", appointmentData.appointmentTime.split("T")[0]);
+  const newTime = prompt("Enter new time (HH:MM):", appointmentData.appointmentTime.split("T")[1].slice(0, 5));
+
+  if (!newDate || !newTime) {
+    alert("Invalid input. Appointment not updated.");
+    return;
+  }
+
+  const newDateTime = new Date(`${newDate}T${newTime}:00Z`).toISOString();
+
+  // Update the appointment in Firestore
+  await updateDoc(appointmentRef, { appointmentTime: newDateTime });
+
+  // Make the old slot available again
+  const oldSlotRef = doc(db, "availabilitySlots", appointmentData.clinic, "availability", appointmentData.slotId);
+  await updateDoc(oldSlotRef, { isAvailable: true });
+
+  // Mark the new slot as unavailable
+  const newSlotRef = doc(db, "availabilitySlots", appointmentData.clinic, "availability", `${newDate}-${newTime}`);
+  await updateDoc(newSlotRef, { isAvailable: false });
+
+  alert("Appointment updated successfully!");
+  await loadAppointments(); // Refresh the appointments list
+}
+
+async function deleteAppointment(appointmentId) {
+  const appointmentRef = doc(db, "appointments", appointmentId);
+  const appointmentSnap = await getDoc(appointmentRef);
+
+  if (!appointmentSnap.exists()) {
+    alert("Appointment not found.");
+    return;
+  }
+
+  const appointmentData = appointmentSnap.data();
+
+  // Show confirmation prompt
+  const confirmDelete = confirm("Are you sure you want to cancel this appointment?");
+  if (!confirmDelete) {
+    return; // Exit if the user cancels the action
+  }
+
+  // Delete the appointment
+  await deleteDoc(appointmentRef);
+
+  // Make the slot available again
+  const slotRef = doc(db, "availabilitySlots", appointmentData.clinic, "availability", appointmentData.slotId);
+  await updateDoc(slotRef, { isAvailable: true });
+
+  alert("Appointment canceled successfully!");
+  await loadAppointments(); // Refresh the appointments list
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

@@ -78,6 +78,7 @@
     <nav class="navbar">
       <a href="home.html">Home</a>
       <a href="appointment-form.html">Schedule Appointment</a>
+      <span id="user-info" style="margin-left: auto; color: white; font-weight: bold; "></span>
       <button id="logout-button" type="submit">Logout</button>
     </nav>
   </header>
@@ -143,8 +144,9 @@
     <!-- Edit Slots Button -->
     <!-- <button type="button" id="edit-slots-button" class="btn btn-secondary" onclick="toggleEditMode()">Edit Slots</button> -->
 
-    <!-- Submit -->
+    <!-- Submit and Cancel Buttons-->
     <button type="button" class="btn btn-primary" style="margin-top: 10px;" onclick="submitAppointment()">Confirm Appointment</button>
+    <button type="button" class="btn btn-secondary" style="margin-top: 10px;" onclick="cancelAppointment()">Cancel</button>
   </div>
   </form>
   </body>
