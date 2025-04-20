@@ -125,6 +125,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   document.getElementById('clinic').addEventListener('change', function () {
     const clinicId = this.value;
+    console.log("Selected clinic ID:", clinicId);
     if (!clinicId) return;
     loadAvailableSlots(clinicId);
   });

@@ -1,63 +1,139 @@
 import { db } from "./firebaseConfig.js";
 import {
   collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
   doc,
-  onSnapshot
+  addDoc,
+  getDoc,
+  deleteDoc,
+  onSnapshot,
+  query,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-const commentInput = document.getElementById("comment-input");
-const submitBtn = document.getElementById("submit-comment");
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+// DOM Elements
 const commentList = document.getElementById("comment-list");
-const extraBox = document.querySelector(".extra-box");
+const commentText = document.getElementById("comment-text");
+const submitComment = document.getElementById("submit-comment");
 
 const commentsRef = collection(db, "comments");
+const auth = getAuth();
 
-function resizeBox() {
-  const contentHeight = extraBox.scrollHeight;
-  extraBox.style.maxHeight = contentHeight + "px";
+async function getUsername(uid) {
+  try {
+    const userDocRef = doc(db, "users", uid); 
+    const userDocSnap = await getDoc(userDocRef); 
+
+    if (userDocSnap.exists()) {
+      return userDocSnap.data().username || "Anonymous";
+    } else {
+      console.warn("User not found, returning Anonymous.");
+      return "Anonymous";
+    }
+  } catch (error) {
+    console.error("Error fetching username:", error);
+    return "Anonymous"; 
+  }
 }
 
-onSnapshot(commentsRef, (snapshot) => {
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    submitComment.disabled = false;
+
+    submitComment.addEventListener("click", async () => {
+      const text = commentText.value.trim();
+      if (!text) return;
+
+      const username = await getUsername(user.uid);
+
+      await addDoc(commentsRef, {
+        text,
+        username, 
+        timestamp: new Date()
+      });
+
+      commentText.value = "";
+    });
+  } else {
+    submitComment.disabled = true;
+    submitComment.textContent = "Login to comment";
+  }
+});
+
+onSnapshot(query(commentsRef, orderBy("timestamp", "desc")), (snapshot) => {
   commentList.innerHTML = "";
 
   snapshot.forEach((docSnap) => {
     const data = docSnap.data();
+    const commentId = docSnap.id;
+
     const commentDiv = document.createElement("div");
-    commentDiv.className = "d-flex justify-content-between align-items-center mb-2";
+    commentDiv.className = "comment border rounded p-3 mb-3";
 
     commentDiv.innerHTML = `
-    <span>${data.text}</span>
-    <button class="btn btn-sm btn-outline-secondary" title="Delete">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-        class="bi bi-trash3" viewBox="0 0 16 16">
-        <path d="M6.5 1.5v1h3v-1h-3Z"/>
-        <path d="M3.5 3v1h9V3h-9Zm1.68 1.11A.5.5 0 0 0 4.5 4.5h-1a.5.5 0 0 0 0 1h.25l.546 7.591a1 1 0 0 0 .998.909h5.412a1 1 0 0 0 .998-.909L12.25 5.5h.25a.5.5 0 0 0 0-1h-1a.5.5 0 0 0-.49.39L10.214 13H5.786L5.01 4.61Z"/>
-        </svg>
-    </button>
+      <strong>${data.username}</strong>
+      <p>${data.text}</p>
+      <button class="btn btn-sm btn-outline-secondary reply-toggle">Reply</button>
+      <button class="btn btn-sm btn-danger delete-comment-btn" data-id="${commentId}">Delete</button>
+      <div class="reply-section mt-2" style="display:none;">
+        <input type="text" class="form-control mb-1 reply-text" placeholder="Your reply">
+        <button class="btn btn-sm btn-primary post-reply-btn">Post Reply</button>
+      </div>
+      <div class="replies mt-2" id="replies-${commentId}"></div>
     `;
 
+    const toggleBtn = commentDiv.querySelector(".reply-toggle");
+    const replySection = commentDiv.querySelector(".reply-section");
 
-    commentDiv.querySelector("button").addEventListener("click", async () => {
-      await deleteDoc(doc(db, "comments", docSnap.id));
+    toggleBtn.addEventListener("click", () => {
+      replySection.style.display = replySection.style.display === "none" ? "block" : "none";
     });
 
-    commentList.appendChild(commentDiv);
+    const replyBtn = commentDiv.querySelector(".post-reply-btn");
+    replyBtn.addEventListener("click", async () => {
+      const replyText = commentDiv.querySelector(".reply-text").value.trim();
+      const currentUser = auth.currentUser;
+
+      if (!replyText || !currentUser) return;
+
+      const replyUsername = await getUsername(currentUser.uid);
+
+      const repliesRef = collection(db, "comments", commentId, "replies");
+      await addDoc(repliesRef, {
+        text: replyText,
+        username: replyUsername, 
+        timestamp: new Date()
+      });
+
+      commentDiv.querySelector(".reply-text").value = "";
+      replySection.style.display = "none";
+    });
+
+    const repliesRef = collection(db, "comments", commentId, "replies");
+    onSnapshot(query(repliesRef, orderBy("timestamp", "asc")), (replySnapshot) => {
+      const repliesContainer = commentDiv.querySelector(`#replies-${commentId}`);
+      repliesContainer.innerHTML = "";
+
+      replySnapshot.forEach((replyDoc) => {
+        const replyData = replyDoc.data();
+
+        const replyDiv = document.createElement("div");
+        replyDiv.className = "reply border-start ps-3 mt-2";
+        replyDiv.innerHTML = `<strong>${replyData.username}</strong>: ${replyData.text}`;
+        repliesContainer.appendChild(replyDiv);
+      });
+    });
+
+    const deleteBtn = commentDiv.querySelector(".delete-comment-btn");
+    deleteBtn.addEventListener("click", async () => {
+      await deleteDoc(doc(db, "comments", commentId));
+      commentDiv.remove();
+    });
+
+    commentList.appendChild(commentDiv); 
   });
-
-  resizeBox();
-});
-
-submitBtn.addEventListener("click", async () => {
-  const commentText = commentInput.value.trim();
-  if (!commentText) return;
-
-  await addDoc(commentsRef, {
-    text: commentText,
-    timestamp: new Date()
-  });
-
-  commentInput.value = "";
 });
