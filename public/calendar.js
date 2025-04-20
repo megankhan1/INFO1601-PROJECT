@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const diff = targetIndex - currentDay + (weekOffset * 7);
     const targetDate = new Date(now);
     targetDate.setDate(now.getDate() + diff);
-    targetDate.setHours(0, 0, 0, 0);
+    targetDate.setHours(0, 0, 0, 0); 
     return targetDate;
   }
 
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 function generateAppointmentId(clinicId, appointmentTime) {
   const datePart = new Date(appointmentTime).toISOString().slice(0, 10).replace(/-/g, '');
   const timePart = new Date(appointmentTime).toISOString().slice(11, 16).replace(':', '');
-  const randomPart = Math.floor(1000 + Math.random() * 9000); // Random 4-digit number
+  const randomPart = Math.floor(1000 + Math.random() * 9000); 
   return `APPT-${clinicId}-${datePart}-${timePart}-${randomPart}`;
 }
 
@@ -162,7 +162,7 @@ window.submitAppointment = async function () {
   const appointmentId = generateAppointmentId(clinicId, selectedSlot);
 
   let formData = {
-    appointmentId, // Add the generated appointment ID
+    appointmentId,
     patientType,
     clinic: clinicId,
     appointmentTime: selectedSlot.toISOString(),
