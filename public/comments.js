@@ -16,7 +16,6 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-// DOM Elements
 const commentList = document.getElementById("comment-list");
 const commentText = document.getElementById("comment-text");
 const submitComment = document.getElementById("submit-comment");
@@ -26,7 +25,6 @@ const auth = getAuth();
 
 let currentUsername = "Anonymous";
 
-// Get logged-in user's username
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const email = user.email;
@@ -35,7 +33,6 @@ onAuthStateChanged(auth, async (user) => {
       currentUsername = userDoc.data().username || "Anonymous";
     }
 
-    // Submit main comment
     submitComment.addEventListener("click", async () => {
       const text = commentText.value.trim();
       if (!text) return;
