@@ -34,7 +34,7 @@ async function loadPatientDetails(patientId) {
 
 async function loadAppointments() {
   const appointmentsDiv = document.querySelector(".appointments");
-  appointmentsDiv.innerHTML = `<h3>Appointments</h3>`;
+  appointmentsDiv.innerHTML = `<h3>APPOINTMENTS</h3>`;
 
   try {
     const appointmentsRef = collection(db, "appointments");
@@ -162,7 +162,7 @@ async function editAppointment(appointmentId) {
     return;
   }
 
-  const newDateTime = new Date(`${newDate}T${newTime}:00Z`).toISOString();
+  const newDateTime = new Date(`${newDate}T${newTime}`).toISOString();
 
   // Update the appointment in Firestore
   await updateDoc(appointmentRef, { appointmentTime: newDateTime });
