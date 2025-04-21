@@ -93,3 +93,38 @@
     background-position: 100% 0, 100% 100%, 0 100%, 0 0;
   }
 }
+
+/* Responsive Navbar Styling */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column; /* Stack the navbar items vertically */
+    align-items: center; /* Align items to the left */
+    gap: 0.5rem; /* Reduce the gap between items */
+  }
+
+  .navbar a, .navbar button {
+    width: 100%; /* Make buttons and links take full width */
+    text-align: center; /* Center the text */
+  }
+
+  .top-bar {
+    flex-wrap: wrap; /* Allow wrapping of content in the top bar */
+    padding: 1rem 0.5rem; /* Adjust padding for smaller screens */
+    justify-content: center;
+  }
+
+  .top-bar img {
+    height: 100px; /* Reduce logo size */
+  }
+
+  .top-bar h1 {
+    font-size: 1.2rem; /* Adjust font size for smaller screens */
+    text-align: center; /* Center the heading */
+    flex: 100%; /* Make the heading take full width */
+  }
+
+  .user-info {
+    position: static; /* Change position to static for smaller screens */
+    margin-top: 0;
+  }
+}
