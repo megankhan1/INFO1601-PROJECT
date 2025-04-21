@@ -162,7 +162,7 @@ async function editAppointment(appointmentId) {
     return;
   }
 
-  const newDateTime = new Date(`${newDate}T${newTime}:00Z`).toISOString();
+  const newDateTime = new Date(`${newDate}T${newTime}`).toISOString();
 
   // Update the appointment in Firestore
   await updateDoc(appointmentRef, { appointmentTime: newDateTime });
