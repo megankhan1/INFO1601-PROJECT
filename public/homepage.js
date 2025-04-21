@@ -34,7 +34,7 @@ async function loadPatientDetails(patientId) {
 
 async function loadAppointments() {
   const appointmentsDiv = document.querySelector(".appointments");
-  appointmentsDiv.innerHTML = `<h3>Appointments</h3>`;
+  appointmentsDiv.innerHTML = `<h3>APPOINTMENTS</h3>`;
 
   try {
     const appointmentsRef = collection(db, "appointments");
