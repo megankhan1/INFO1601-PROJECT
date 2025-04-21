@@ -115,6 +115,7 @@
 
   .top-bar img {
     height: 100px; /* Reduce logo size */
+    margin: 0;
   }
 
   .top-bar h1 {
@@ -123,7 +124,7 @@
     flex: 100%; /* Make the heading take full width */
   }
 
-  .user-info {
+  #user-info {
     position: static; /* Change position to static for smaller screens */
     margin-top: 0;
   }
