@@ -1,4 +1,4 @@
-import { db } from "./firebaseConfig.js";
+/*import { db } from "./firebaseConfig.js";
 import {
   collection,
   addDoc,
@@ -138,6 +138,96 @@ onSnapshot(query(commentsRef, orderBy("timestamp", "desc")), (snapshot) => {
         repliesContainer.appendChild(replyDiv);
       });
     });
+
+    commentList.appendChild(commentDiv);
+  });
+});*/
+
+import { db } from "./firebaseConfig.js";
+import {
+  collection,
+  addDoc,
+  getDoc,
+  getDocs,
+  doc,
+  query,
+  orderBy,
+  onSnapshot,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+const commentList = document.getElementById("comment-list");
+const commentText = document.getElementById("comment-text");
+const submitComment = document.getElementById("submit-comment");
+
+const commentsRef = collection(db, "comments");
+const auth = getAuth();
+
+let currentUsername = "Anonymous";
+let selectedAppointment = null;
+
+document.addEventListener("click", (e) => {
+  const appointmentItem = e.target.closest(".appointment-item");
+  if (appointmentItem) {
+    const patientName = appointmentItem.querySelector("strong")?.textContent?.trim() || "Unnamed Patient";
+    const appointmentId = appointmentItem.getAttribute("data-appointment-id");
+    selectedAppointment = {
+      id: appointmentId,
+      patientName: patientName
+    };
+  }
+});
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const email = user.email;
+    const userDoc = await getDoc(doc(db, "users", email));
+    if (userDoc.exists()) {
+      currentUsername = userDoc.data().username || "Anonymous";
+    }
+
+    submitComment.addEventListener("click", async () => {
+      const text = commentText.value.trim();
+      if (!text || !selectedAppointment) {
+        alert("Please select an appointment before commenting.");
+        return;
+      }
+
+      await addDoc(commentsRef, {
+        text,
+        username: currentUsername,
+        timestamp: serverTimestamp(),
+        appointmentId: selectedAppointment.id,
+        patientName: selectedAppointment.patientName
+      });
+
+      commentText.value = "";
+    });
+
+  } else {
+    submitComment.disabled = true;
+    submitComment.textContent = "Login to comment";
+  }
+});
+
+onSnapshot(query(commentsRef, orderBy("timestamp", "desc")), (snapshot) => {
+  commentList.innerHTML = "";
+
+  snapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const commentDiv = document.createElement("div");
+    commentDiv.className = "comment border rounded p-3 mb-3 bg-light shadow-sm";
+
+    commentDiv.innerHTML = `
+      <p class="mb-1"><strong>${data.username}</strong></p>
+      <p class="mb-1 text-muted small"><em>Patient: ${data.patientName || "Unknown"}</em></p>
+      <p>${data.text}</p>
+    `;
 
     commentList.appendChild(commentDiv);
   });
