@@ -8,7 +8,11 @@ import {
 import {
   doc,
   setDoc,
-  getDoc
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 const signupForm = document.getElementById("signup-form");
@@ -28,6 +32,14 @@ if (signupForm) {
     }
 
     try {
+      const usernameDocRef = doc(db, "users", username);
+      const usernameDocSnap = await getDoc(usernameDocRef);
+
+      if (usernameDocSnap.exists()) {
+        alert("Username already exists. Please choose a different username.");
+        return;
+      }
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
@@ -51,10 +63,22 @@ if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const email = loginForm.querySelector('input[name="email"]').value;
+    const username = loginForm.querySelector('input[name="username"]').value;
+    console.log("Username:", username); // Debugging log
     const password = loginForm.querySelector('input[name="password"]').value;
 
     try {
+      const usersRef = collection(db, "users");
+      const usernameQuery = query(usersRef, where("username", "==", username));
+      const querySnapshot = await getDocs(usernameQuery);
+
+      if(querySnapshot.empty) {
+        alert("Username does not exist. Please check your username.");
+        return;
+      }
+
+      const userDoc = querySnapshot.docs[0];
+      const email = userDoc.data().email;
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log("Login success:", userCredential.user);
       window.location.href = "home.html";
