@@ -57,6 +57,12 @@
       border-radius: 5px;
     }
 
+    #patientList {
+      max-height: 200px; /* Set the maximum height for the dropdown */
+      overflow-y: auto; /* Enable vertical scrolling */
+      display: block; /* Ensure the dropdown is displayed as a block element */
+    }
+
     button:hover {
       background-color: #0056b3;
     }
@@ -123,8 +129,8 @@
     <div id="existingPatientForm" class="form-section hidden">
       <h3>Existing Patient</h3>
       <label for="patientLookup">Select Patient:</label>
-      <input list="patientList" name="patientLookup" id="patientLookup" required />
-      <datalist id="patientList"><!-- This will be populated dynamically with existing patients --></datalist>    
+      <!-- <input list="patientList" name="patientLookup" id="patientLookup" required /> -->
+      <select id="patientList"><!-- This will be populated dynamically with existing patients --></select>    
     </div>
 
     <!-- Clinic Selection -->

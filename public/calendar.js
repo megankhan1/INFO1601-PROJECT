@@ -101,10 +101,18 @@ document.addEventListener('DOMContentLoaded', async function () {
     const datalist = document.getElementById('patientList');
     datalist.innerHTML = '';
 
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Select an existing patient';
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    datalist.appendChild(defaultOption);
+
     snapshot.forEach(doc => {
       const data = doc.data();
       const option = document.createElement('option');
       option.value = data.patientId;
+      option.textContent = `${data.fullName} (${data.patientId})`;
       datalist.appendChild(option);
     });
   }

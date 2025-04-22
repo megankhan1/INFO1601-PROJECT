@@ -118,7 +118,7 @@ async function loadAppointments() {
       if (!patientId) return;
 
       await loadPatientDetails(patientId);
-      await loadPatientComments(patientId); // Ensure this function exists
+      //await loadPatientComments(patientId); // Ensure this function exists
     });
 
     // Add click event listener for edit and cancel buttons
