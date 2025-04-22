@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       const data = doc.data();
       const option = document.createElement('option');
       option.value = data.patientId;
-      option.textContent = `${data.fullName} (${data.patientId})`;
+      option.textContent = `${data.patientId}`;
       datalist.appendChild(option);
     });
   }
